@@ -1,8 +1,8 @@
 //
 //  RegisterView.swift
-//  App12
+//  WA8_group19
 //
-//  Created by Sakib Miazi on 6/2/23.
+//  Created by user267597 on 11/14/24.
 //
 
 import UIKit
@@ -11,71 +11,70 @@ class RegisterView: UIView {
     var textFieldName: UITextField!
     var textFieldEmail: UITextField!
     var textFieldPassword: UITextField!
-    var buttonRegister: UIButton!
+    var registerButton: UIButton!
     
-    override init(frame: CGRect){
+    override init(frame: CGRect) {
         super.init(frame: frame)
         self.backgroundColor = .white
-        setuptextFieldName()
-        setuptextFieldEmail()
-        setuptextFieldPassword()
-        setupbuttonRegister()
-        
-        initConstraints()
+        setupTextFields()
+        setupRegisterButton()
+        setupConstraints()
     }
     
-    func setuptextFieldName(){
+    func setupTextFields(){
         textFieldName = UITextField()
         textFieldName.placeholder = "Name"
-        textFieldName.keyboardType = .default
         textFieldName.borderStyle = .roundedRect
         textFieldName.translatesAutoresizingMaskIntoConstraints = false
-        self.addSubview(textFieldName)
-    }
-    
-    func setuptextFieldEmail(){
+        
         textFieldEmail = UITextField()
         textFieldEmail.placeholder = "Email"
-        textFieldEmail.keyboardType = .emailAddress
         textFieldEmail.borderStyle = .roundedRect
+        textFieldEmail.keyboardType = .emailAddress
         textFieldEmail.translatesAutoresizingMaskIntoConstraints = false
-        self.addSubview(textFieldEmail)
-    }
-    
-    func setuptextFieldPassword(){
+        
         textFieldPassword = UITextField()
         textFieldPassword.placeholder = "Password"
-        textFieldPassword.textContentType = .password
-        textFieldPassword.isSecureTextEntry = true
         textFieldPassword.borderStyle = .roundedRect
+        textFieldPassword.isSecureTextEntry = true
         textFieldPassword.translatesAutoresizingMaskIntoConstraints = false
+        
+        self.addSubview(textFieldName)
+        self.addSubview(textFieldEmail)
         self.addSubview(textFieldPassword)
     }
     
-    func setupbuttonRegister(){
-        buttonRegister = UIButton(type: .system)
-        buttonRegister.setTitle("Register", for: .normal)
-        buttonRegister.titleLabel?.font = .boldSystemFont(ofSize: 16)
-        buttonRegister.translatesAutoresizingMaskIntoConstraints = false
-        self.addSubview(buttonRegister)
+    func setupRegisterButton(){
+        registerButton = UIButton(type: .system)
+        registerButton.setTitle("Register", for: .normal)
+        registerButton.setTitleColor(.white, for: .normal)
+        registerButton.backgroundColor = .systemBlue
+        registerButton.layer.cornerRadius = 5
+        registerButton.translatesAutoresizingMaskIntoConstraints = false
+        self.addSubview(registerButton)
     }
     
-    func initConstraints(){
+    func setupConstraints(){
         NSLayoutConstraint.activate([
-            textFieldName.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 32),
-            textFieldName.centerXAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerXAnchor),
-            textFieldName.widthAnchor.constraint(equalTo: self.safeAreaLayoutGuide.widthAnchor, multiplier: 0.9),
+            textFieldName.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 100),
+            textFieldName.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
+            textFieldName.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
+            textFieldName.heightAnchor.constraint(equalToConstant: 40),
             
-            textFieldEmail.topAnchor.constraint(equalTo: textFieldName.bottomAnchor, constant: 16),
-            textFieldEmail.centerXAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerXAnchor),
-            textFieldEmail.widthAnchor.constraint(equalTo: self.safeAreaLayoutGuide.widthAnchor, multiplier: 0.9),
+            textFieldEmail.topAnchor.constraint(equalTo: textFieldName.bottomAnchor, constant: 20),
+            textFieldEmail.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
+            textFieldEmail.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
+            textFieldEmail.heightAnchor.constraint(equalToConstant: 40),
             
-            textFieldPassword.topAnchor.constraint(equalTo: textFieldEmail.bottomAnchor, constant: 16),
-            textFieldPassword.centerXAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerXAnchor),
-            textFieldPassword.widthAnchor.constraint(equalTo: self.safeAreaLayoutGuide.widthAnchor, multiplier: 0.9),
+            textFieldPassword.topAnchor.constraint(equalTo: textFieldEmail.bottomAnchor, constant: 20),
+            textFieldPassword.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
+            textFieldPassword.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
+            textFieldPassword.heightAnchor.constraint(equalToConstant: 40),
             
-            buttonRegister.topAnchor.constraint(equalTo: textFieldPassword.bottomAnchor, constant: 32),
-            buttonRegister.centerXAnchor.constraint(equalTo: self.safeAreaLayoutGuide.centerXAnchor),
+            registerButton.topAnchor.constraint(equalTo: textFieldPassword.bottomAnchor, constant: 30),
+            registerButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
+            registerButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
+            registerButton.heightAnchor.constraint(equalToConstant: 50)
         ])
     }
     

@@ -44,7 +44,7 @@ class MainScreenView: UIView {
     
     func setupTableViewContacts(){
         tableViewContacts = UITableView()
-        tableViewContacts.register(ContactsTableViewCell.self, forCellReuseIdentifier: Configs.tableViewContactsID)
+        tableViewContacts.register(UITableViewCell.self, forCellReuseIdentifier: "UserCell")
         tableViewContacts.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(tableViewContacts)
     }
@@ -56,10 +56,10 @@ class MainScreenView: UIView {
         floatingButtonAddContact.contentHorizontalAlignment = .fill
         floatingButtonAddContact.contentVerticalAlignment = .fill
         floatingButtonAddContact.imageView?.contentMode = .scaleAspectFit
-        floatingButtonAddContact.layer.cornerRadius = 16
-        floatingButtonAddContact.imageView?.layer.shadowOffset = .zero
-        floatingButtonAddContact.imageView?.layer.shadowRadius = 0.8
-        floatingButtonAddContact.imageView?.layer.shadowOpacity = 0.7
+        floatingButtonAddContact.layer.cornerRadius = 24
+        floatingButtonAddContact.layer.shadowOffset = .zero
+        floatingButtonAddContact.layer.shadowRadius = 0.8
+        floatingButtonAddContact.layer.shadowOpacity = 0.7
         floatingButtonAddContact.imageView?.clipsToBounds = true
         floatingButtonAddContact.translatesAutoresizingMaskIntoConstraints = false
         self.addSubview(floatingButtonAddContact)
@@ -74,8 +74,7 @@ class MainScreenView: UIView {
             profilePic.topAnchor.constraint(equalTo: self.safeAreaLayoutGuide.topAnchor, constant: 8),
             profilePic.leadingAnchor.constraint(equalTo: self.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             
-            labelText.topAnchor.constraint(equalTo: profilePic.topAnchor),
-            labelText.bottomAnchor.constraint(equalTo: profilePic.bottomAnchor),
+            labelText.centerYAnchor.constraint(equalTo: profilePic.centerYAnchor),
             labelText.leadingAnchor.constraint(equalTo: profilePic.trailingAnchor, constant: 8),
             
             tableViewContacts.topAnchor.constraint(equalTo: profilePic.bottomAnchor, constant: 8),

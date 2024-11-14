@@ -1,10 +1,3 @@
-//
-//  ViewController.swift
-//  App12
-//
-//  Created by Sakib Miazi on 6/1/23.
-//
-
 import UIKit
 import FirebaseAuth
 import FirebaseFirestore
@@ -13,13 +6,15 @@ class ViewController: UIViewController {
 
     let mainScreen = MainScreenView()
     
-    var contactsList = [Contact]()
-    
     var handleAuth: AuthStateDidChangeListenerHandle?
     
-    var currentUser:FirebaseAuth.User?
+    var currentUser: FirebaseAuth.User?
     
     let database = Firestore.firestore()
+    
+    var users: [UserModel] = []
+    
+    let childProgressView = ProgressSpinnerViewController()
     
     override func loadView() {
         view = mainScreen
@@ -27,53 +22,27 @@ class ViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        //MARK: handling if the Authentication state is changed (sign in, sign out, register)...
-        handleAuth = Auth.auth().addStateDidChangeListener{ auth, user in
+
+        handleAuth = Auth.auth().addStateDidChangeListener { [weak self] auth, user in
+            guard let self = self else { return }
             if user == nil{
-                //MARK: not signed in...
                 self.currentUser = nil
-                self.mainScreen.labelText.text = "Please sign in to see the notes!"
+                self.mainScreen.labelText.text = "Please sign in to see the chats!"
                 self.mainScreen.floatingButtonAddContact.isEnabled = false
                 self.mainScreen.floatingButtonAddContact.isHidden = true
-                
-                //MARK: Reset tableView...
-                self.contactsList.removeAll()
+
+                self.users.removeAll()
                 self.mainScreen.tableViewContacts.reloadData()
-                
-                //MARK: Sign in bar button...
+
                 self.setupRightBarButton(isLoggedin: false)
                 
-            }else{
-                //MARK: the user is signed in...
+            } else {
                 self.currentUser = user
                 self.mainScreen.labelText.text = "Welcome \(user?.displayName ?? "Anonymous")!"
                 self.mainScreen.floatingButtonAddContact.isEnabled = true
                 self.mainScreen.floatingButtonAddContact.isHidden = false
-                
-                //MARK: Logout bar button...
                 self.setupRightBarButton(isLoggedin: true)
-                
-                //MARK: Observe Firestore database to display the contacts list...
-                self.database.collection("users")
-                    .document((self.currentUser?.email)!)
-                    .collection("contacts")
-                    .addSnapshotListener(includeMetadataChanges: false, listener: {querySnapshot, error in
-                        if let documents = querySnapshot?.documents{
-                            self.contactsList.removeAll()
-                            for document in documents{
-                                do{
-                                    let contact  = try document.data(as: Contact.self)
-                                    self.contactsList.append(contact)
-                                }catch{
-                                    print(error)
-                                }
-                            }
-                            self.contactsList.sort(by: {$0.name < $1.name})
-                            self.mainScreen.tableViewContacts.reloadData()
-                        }
-                    })
-                
+                self.fetchAllUsers()
             }
         }
     }
@@ -81,38 +50,111 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        title = "My Contacts"
-        
-        //MARK: patching table view delegate and data source...
+        title = "My Chats"
+
         mainScreen.tableViewContacts.delegate = self
         mainScreen.tableViewContacts.dataSource = self
-        
-        //MARK: removing the separator line...
+
         mainScreen.tableViewContacts.separatorStyle = .none
-        
-        //MARK: Make the titles look large...
+
         navigationController?.navigationBar.prefersLargeTitles = true
-        
-        //MARK: Put the floating button above all the views...
+
         view.bringSubviewToFront(mainScreen.floatingButtonAddContact)
-        
-        //MARK: tapping the floating add contact button...
-        mainScreen.floatingButtonAddContact.addTarget(self, action: #selector(addContactButtonTapped), for: .touchUpInside)
+
+        mainScreen.floatingButtonAddContact.addTarget(self, action: #selector(addChatButtonTapped), for: .touchUpInside)
     }
     
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        Auth.auth().removeStateDidChangeListener(handleAuth!)
+        if let handleAuth = handleAuth {
+            Auth.auth().removeStateDidChangeListener(handleAuth)
+        }
     }
     
-    func signIn(email: String, password: String){
-        Auth.auth().signIn(withEmail: email, password: password)
+    @objc func addChatButtonTapped(){
+        let chatListVC = ChatListViewController()
+        navigationController?.pushViewController(chatListVC, animated: true)
     }
     
-    @objc func addContactButtonTapped(){
-        let addContactController = AddContactViewController()
-        addContactController.currentUser = self.currentUser
-        navigationController?.pushViewController(addContactController, animated: true)
+    func fetchAllUsers(){
+        showActivityIndicator()
+        
+        database.collection("users").getDocuments { [weak self] snapshot, error in
+            guard let self = self else { return }
+            
+            DispatchQueue.main.async {
+                self.hideActivityIndicator()
+            }
+            
+            if let error = error {
+                self.showAlert(message: error.localizedDescription)
+                return
+            }
+            
+            guard let documents = snapshot?.documents else { return }
+            
+            var allUsers: [UserModel] = []
+            for doc in documents {
+                let data = doc.data()
+                let user = UserModel(dictionary: data)
+                if user.uid != self.currentUser?.uid {
+                    allUsers.append(user)
+                }
+            }
+            
+            self.users = allUsers
+            DispatchQueue.main.async {
+                self.mainScreen.tableViewContacts.reloadData()
+            }
+        }
+    }
+
+    func showAlert(message: String){
+        let alert = UIAlertController(title: "Error", message: message, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alert, animated: true)
     }
 }
 
+extension ViewController: UITableViewDataSource, UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+         return users.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+
+        let user = users[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: "UserCell", for: indexPath)
+        
+        var content = cell.defaultContentConfiguration()
+        content.text = user.name
+        content.secondaryText = user.email
+        cell.contentConfiguration = content
+        
+        cell.accessoryType = .disclosureIndicator
+        
+        return cell
+    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let selectedUser = users[indexPath.row]
+        let chatVC = ChatViewController(receiver: selectedUser)
+        navigationController?.pushViewController(chatVC, animated: true)
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+}
+
+extension ViewController: ProgressSpinnerDelegate {
+    func showActivityIndicator(){
+        addChild(childProgressView)
+        view.addSubview(childProgressView.view)
+        childProgressView.view.frame = view.bounds
+        childProgressView.didMove(toParent: self)
+    }
+    
+    func hideActivityIndicator(){
+        childProgressView.willMove(toParent: nil)
+        childProgressView.view.removeFromSuperview()
+        childProgressView.removeFromParent()
+    }
+}
