@@ -31,20 +31,73 @@ class RegisterViewController: UIViewController {
         registerNewAccount()
     }
     
-    func registerNewAccount(){
+//    func registerNewAccount(){
+//        showActivityIndicator()
+//
+//        guard let name = registerView.textFieldName.text,
+//              let email = registerView.textFieldEmail.text,
+//              let password = registerView.textFieldPassword.text,
+//              !name.isEmpty,
+//              !email.isEmpty,
+//              !password.isEmpty else {
+//            hideActivityIndicator()
+//            showAlert(message: "Please fill in all fields.")
+//            return
+//        }
+//        
+//        Auth.auth().createUser(withEmail: email, password: password) { [weak self] result, error in
+//            guard let self = self else { return }
+//            if let error = error {
+//                self.hideActivityIndicator()
+//                self.showAlert(message: error.localizedDescription)
+//                return
+//            }
+//            
+//            guard let user = result?.user else {
+//                self.hideActivityIndicator()
+//                self.showAlert(message: "User data not available.")
+//                return
+//            }
+//
+//            let changeRequest = user.createProfileChangeRequest()
+//            changeRequest.displayName = name
+//            changeRequest.commitChanges { [weak self] error in
+//                if let error = error {
+//                    self?.hideActivityIndicator()
+//                    self?.showAlert(message: error.localizedDescription)
+//                    return
+//                }
+//
+//                self?.saveUserToFirestore(user: user, name: name, email: email)
+//            }
+//        }
+//    }
+    
+    
+    func registerNewAccount() {
         showActivityIndicator()
 
         guard let name = registerView.textFieldName.text,
               let email = registerView.textFieldEmail.text,
               let password = registerView.textFieldPassword.text,
+              let confirmPassword = registerView.textFieldConfirmPassword.text,
               !name.isEmpty,
               !email.isEmpty,
-              !password.isEmpty else {
+              !password.isEmpty,
+              !confirmPassword.isEmpty else {
             hideActivityIndicator()
             showAlert(message: "Please fill in all fields.")
             return
         }
-        
+
+        // Check if passwords match
+        if password != confirmPassword {
+            hideActivityIndicator()
+            showAlert(message: "Passwords do not match. Please try again.")
+            return
+        }
+
+        // Proceed with Firebase Authentication
         Auth.auth().createUser(withEmail: email, password: password) { [weak self] result, error in
             guard let self = self else { return }
             if let error = error {
@@ -52,7 +105,7 @@ class RegisterViewController: UIViewController {
                 self.showAlert(message: error.localizedDescription)
                 return
             }
-            
+
             guard let user = result?.user else {
                 self.hideActivityIndicator()
                 self.showAlert(message: "User data not available.")
@@ -72,6 +125,7 @@ class RegisterViewController: UIViewController {
             }
         }
     }
+
 
     func saveUserToFirestore(user: FirebaseAuth.User, name: String, email: String){
         let db = Firestore.firestore()

@@ -17,7 +17,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		8A70505F2CE5868400E85C74 /* Exceptions for "WA8_group19" folder in "WA8_group19" target */ = {
+		8AE7DCDA2CE64F5F003C135A /* Exceptions for "WA8_group19" folder in "WA8_group19" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -27,10 +27,10 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		8A70504F2CE5868200E85C74 /* WA8_group19 */ = {
+		8AE7DCD22CE64F5F003C135A /* WA8_group19 */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				8A70505F2CE5868400E85C74 /* Exceptions for "WA8_group19" folder in "WA8_group19" target */,
+				8AE7DCDA2CE64F5F003C135A /* Exceptions for "WA8_group19" folder in "WA8_group19" target */,
 			);
 			path = WA8_group19;
 			sourceTree = "<group>";
@@ -54,7 +54,7 @@
 		8A7050442CE5868200E85C74 = {
 			isa = PBXGroup;
 			children = (
-				8A70504F2CE5868200E85C74 /* WA8_group19 */,
+				8AE7DCD22CE64F5F003C135A /* WA8_group19 */,
 				8A70504E2CE5868200E85C74 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -83,7 +83,7 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				8A70504F2CE5868200E85C74 /* WA8_group19 */,
+				8AE7DCD22CE64F5F003C135A /* WA8_group19 */,
 			);
 			name = WA8_group19;
 			packageProductDependencies = (

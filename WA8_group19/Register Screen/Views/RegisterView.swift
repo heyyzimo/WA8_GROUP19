@@ -11,6 +11,7 @@ class RegisterView: UIView {
     var textFieldName: UITextField!
     var textFieldEmail: UITextField!
     var textFieldPassword: UITextField!
+    var textFieldConfirmPassword: UITextField!
     var registerButton: UIButton!
     
     override init(frame: CGRect) {
@@ -39,9 +40,16 @@ class RegisterView: UIView {
         textFieldPassword.isSecureTextEntry = true
         textFieldPassword.translatesAutoresizingMaskIntoConstraints = false
         
+        textFieldConfirmPassword = UITextField()
+        textFieldConfirmPassword.placeholder = "Password"
+        textFieldConfirmPassword.borderStyle = .roundedRect
+        textFieldConfirmPassword.isSecureTextEntry = true
+        textFieldConfirmPassword.translatesAutoresizingMaskIntoConstraints = false
+        
         self.addSubview(textFieldName)
         self.addSubview(textFieldEmail)
         self.addSubview(textFieldPassword)
+        self.addSubview(textFieldConfirmPassword)
     }
     
     func setupRegisterButton(){
@@ -71,7 +79,13 @@ class RegisterView: UIView {
             textFieldPassword.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
             textFieldPassword.heightAnchor.constraint(equalToConstant: 40),
             
-            registerButton.topAnchor.constraint(equalTo: textFieldPassword.bottomAnchor, constant: 30),
+            textFieldConfirmPassword.topAnchor.constraint(equalTo: textFieldPassword.bottomAnchor, constant: 20),
+            textFieldConfirmPassword.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
+            textFieldConfirmPassword.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
+            textFieldConfirmPassword.heightAnchor.constraint(equalToConstant: 40),
+            
+            
+            registerButton.topAnchor.constraint(equalTo: textFieldConfirmPassword.bottomAnchor, constant: 30),
             registerButton.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 20),
             registerButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -20),
             registerButton.heightAnchor.constraint(equalToConstant: 50)
