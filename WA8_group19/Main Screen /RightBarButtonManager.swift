@@ -115,17 +115,19 @@ extension ViewController{
     }
     
     func signInToFirebase(email: String, password: String){
-        //MARK: can you display progress indicator here?
-        //MARK: authenticating the user...
-        Auth.auth().signIn(withEmail: email, password: password, completion: {(result, error) in
-            if error == nil{
-                //MARK: user authenticated...
-                //MARK: can you hide the progress indicator here?
-            }else{
-                //MARK: alert that no user found or password wrong...
+        showActivityIndicator()
+
+        Auth.auth().signIn(withEmail: email, password: password) { [weak self] (result, error) in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.hideActivityIndicator()
             }
             
-        })
+            if let error = error {
+                self.showAlert(message: error.localizedDescription)
+            } else {
+            }
+        }
     }
     
 }

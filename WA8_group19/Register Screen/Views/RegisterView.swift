@@ -41,7 +41,7 @@ class RegisterView: UIView {
         textFieldPassword.translatesAutoresizingMaskIntoConstraints = false
         
         textFieldConfirmPassword = UITextField()
-        textFieldConfirmPassword.placeholder = "Password"
+        textFieldConfirmPassword.placeholder = "Confirm Password"
         textFieldConfirmPassword.borderStyle = .roundedRect
         textFieldConfirmPassword.isSecureTextEntry = true
         textFieldConfirmPassword.translatesAutoresizingMaskIntoConstraints = false
